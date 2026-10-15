@@ -2,7 +2,7 @@
 
 **Touch-free 3D cell explorer.** Rotate, zoom and select the parts of an animal cell using only your webcam and your hands. No controller, no install, no account, no server — one HTML file.
 
-> 🔬 **Live demo:** _Live URL pending below_
+> 🔬 **Live demo:** https://cellab.vercel.app
 > 📦 **This is version 1 — Cellab.** The second iteration, **Celly (v2)**, is already scoped: Blender-rigged 3D hands, hand control on every page, offline bundling and more (see [Roadmap](#-roadmap-cellab-v1--celly-v2)).
 
 ![Cellab explore page](docs/screenshot.png)
