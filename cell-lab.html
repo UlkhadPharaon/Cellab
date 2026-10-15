@@ -1,0 +1,136 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CellLab - hand-tracked cell explorer</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%A0%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#08171f;--p:#0f2630;--l:#1b3a47;--t:#e6f1ef;--m:#8fb0b3;--a:#7ee0c3}
+*{box-sizing:border-box}html,body{height:100%}body{margin:0;background:var(--bg);color:var(--t);font:15px/1.5 system-ui,sans-serif;display:flex}
+nav{width:210px;flex:none;background:var(--p);padding:18px 14px;display:flex;flex-direction:column;gap:6px;border-right:1px solid var(--l)}
+nav h1{font:700 22px Georgia,serif;margin:0 0 4px}nav small{color:var(--m);margin-bottom:12px}
+nav button{background:none;border:1px solid transparent;color:var(--t);text-align:left;padding:10px 12px;border-radius:8px;font:inherit;cursor:pointer}
+nav button:hover{background:var(--l)}nav button.on{border-color:var(--a);color:var(--a)}
+#prog{margin-top:auto;color:var(--m);font-size:13px}
+main{flex:1;min-width:0;position:relative;overflow:auto}.page{display:none;min-height:100%;padding:0}.page.on{display:block}
+#p1.on{display:flex;height:100%}#stage{flex:1;position:relative;min-height:340px}#cv{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+#hud{position:absolute;left:14px;top:14px;display:flex;flex-direction:column;gap:8px;align-items:flex-start;max-width:290px}
+.btn{background:var(--a);color:#062;border:0;padding:10px 16px;border-radius:8px;font:600 14px system-ui;cursor:pointer}
+#st{background:#0008;padding:6px 10px;border-radius:6px;font-size:13px}
+#tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.tog{background:var(--l);color:var(--t);border:1px solid var(--l);padding:8px 12px;border-radius:8px;font:600 13px system-ui;cursor:pointer;text-decoration:none;display:inline-block}
+.tog:hover{border-color:var(--a)}
+.tog.on{border-color:var(--a);color:var(--a)}
+#vid{display:none;width:200px;border-radius:8px;transform:scaleX(-1);border:1px solid var(--l)}
+#help{position:absolute;left:14px;bottom:14px;background:#0009;padding:10px 12px;border-radius:8px;font-size:13px;color:var(--m);max-width:340px}
+#help b{color:var(--t)}
+aside{width:300px;flex:none;background:var(--p);border-left:1px solid var(--l);padding:20px;overflow:auto}
+aside h2{font:700 24px Georgia,serif;margin:0 0 6px}aside h4{margin:14px 0 2px;color:var(--a);font-size:14px}aside p{margin:0;color:#c9dcdc}
+.sw{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:8px}
+.wrap{padding:26px;max-width:1000px}.wrap h2{font:700 28px Georgia,serif;margin:0 0 4px}.sub{color:var(--m);margin:0 0 18px}
+input{background:var(--p);border:1px solid var(--l);color:var(--t);padding:10px 12px;border-radius:8px;width:100%;max-width:340px;font:inherit;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{background:var(--p);border:1px solid var(--l);border-left-width:5px;border-radius:10px;padding:16px}
+.card.fl{outline:2px solid var(--a)}.card h3{margin:0 0 6px;font:700 18px Georgia,serif}.card h4{margin:10px 0 0;font-size:13px;color:var(--a)}.card p{margin:2px 0 0;font-size:14px;color:#c9dcdc}
+#map{position:relative;height:540px;background:var(--p);border:1px solid var(--l);border-radius:12px;overflow:hidden}
+#map svg{position:absolute;inset:0;width:100%;height:100%}#map line{stroke:var(--l);stroke-width:2;vector-effect:non-scaling-stroke}
+.nd{position:absolute;transform:translate(-50%,-50%);width:170px;padding:10px;background:var(--bg);border:2px solid var(--l);border-radius:12px;font-size:13px;text-align:center;cursor:pointer;color:var(--t)}
+.nd:hover{border-color:var(--a)}.nd.ok{border-color:#4ade80;cursor:default}.nd.bad{animation:sh .3s;border-color:#f87171}
+.nd.sel{border-color:var(--a)}.ctr{left:50%;top:50%;width:110px;border-radius:50%;height:110px;display:flex;align-items:center;justify-content:center;font:700 20px Georgia,serif;cursor:default}
+@keyframes sh{25%{margin-left:-6px}75%{margin-left:6px}}
+#ch{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}#ch button{background:var(--l);color:var(--t);border:0;padding:9px 14px;border-radius:8px;font:inherit;cursor:pointer}#ch button:hover{background:var(--a);color:#062}
+@media(max-width:760px){body{flex-direction:column}nav{width:auto;flex-direction:row;flex-wrap:wrap;padding:8px}nav h1,nav small,#prog{display:none}#p1.on{flex-direction:column}aside{width:auto;border-left:0;border-top:1px solid var(--l);max-height:40%}.nd{width:110px;font-size:11px;padding:6px}}
+</style></head><body>
+<nav><h1>CellLab</h1><small>Touch-free cell explorer</small>
+<button class="on" data-p="p1">1 &middot; Explore</button><button data-p="p2">2 &middot; Cell guide</button><button data-p="p3">3 &middot; Mind map test</button><div id="prog"></div></nav>
+<main>
+<section class="page on" id="p1"><div id="stage"><canvas id="cv"></canvas>
+<div id="hud"><button class="btn" id="go">Start hand tracking</button><div id="tools"><button class="tog on" id="spin" title="Pause or resume the idle auto-rotation of the cell">&#x23F8; Stop rotation</button><button class="tog" id="iso" title="Hide every part except the one you selected">&#x2B21; Isolate selection</button><a class="tog" id="repo" href="https://github.com/UlkhadPharaon/Cellab" target="_blank" rel="noopener" title="Open the public source repository on GitHub">&#x2197; GitHub repo</a></div><div id="st">Mouse controls active. Start the camera for hand control.</div><video id="vid" playsinline muted></video></div>
+<div id="help"><b>Pinch</b> (thumb + index) on a part to select it. <b>Pinch in empty space</b> and move your hand to rotate. <b>Pinch with both hands</b> and spread or close them to zoom. Point with your index fingertip to highlight. Mouse: drag, wheel, click. Buttons: stop/resume the auto-rotation, isolate the selected part, open the source code.</div></div>
+<aside id="info"><h2>Pick an organelle</h2><p>Point at the cell with your index finger, or hover with the mouse, then pinch or click.</p></aside></section>
+<section class="page" id="p2"><div class="wrap"><h2>Cell guide</h2><p class="sub">Animal cell: what each part is, what it does, and how to remember it.</p><input id="q" placeholder="Search a part or a function..."><div class="grid" id="gd"></div></div></section>
+<section class="page" id="p3"><div class="wrap"><h2>Mind map test</h2><p class="sub">Each bubble describes a job. Click one and choose which part of the cell does it.</p><div id="map"></div><div id="ch"></div><p id="sc" class="sub" style="margin-top:12px"></p></div></section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const O={
+membrane:{n:'Cell membrane',c:0x4cc9f0,d:'A thin, flexible double layer of lipids with embedded proteins that wraps the whole cell.',f:'Controls what enters and leaves, receives signals and keeps the inside stable.',t:'Think of a security gate with a guest list.',q:'Acts as a selective gatekeeper around the cell'},
+nucleus:{n:'Nucleus',c:0x7b5cff,d:'A large compartment with a double membrane, holding the cell\'s DNA.',f:'Stores genetic information and controls growth, activity and division.',t:'The control room: instructions never leave, only copies (mRNA) do.',q:'Stores DNA and controls the cell'},
+nucleolus:{n:'Nucleolus',c:0xff4d8d,d:'A dense spot inside the nucleus, not surrounded by a membrane.',f:'Builds ribosome parts (rRNA + proteins).',t:'The factory that makes the protein-makers.',q:'Assembles ribosome subunits inside the nucleus'},
+mito:{n:'Mitochondria',c:0xff8a3d,d:'Bean-shaped organelles with a folded inner membrane (cristae).',f:'Release usable energy (ATP) from nutrients through cellular respiration.',t:'The power plant. Busy cells such as muscle have thousands.',q:'Produces most of the cell\'s ATP energy'},
+er:{n:'Endoplasmic reticulum',c:0xe9a0ff,d:'A network of membrane tubes and sacs linked to the nucleus. Rough ER carries ribosomes, smooth ER does not.',f:'Rough ER makes and folds proteins. Smooth ER makes lipids and detoxifies.',t:'Rough = ribosomes = proteins. Smooth = lipids.',q:'Network that folds proteins and makes lipids'},
+golgi:{n:'Golgi apparatus',c:0xffc23d,d:'A stack of flattened membrane sacs.',f:'Modifies, sorts, packages and ships proteins and lipids in vesicles.',t:'The post office: label, pack, deliver.',q:'Sorts and packages molecules for delivery'},
+lyso:{n:'Lysosomes',c:0x2ec4b6,d:'Small sacs full of digestive enzymes.',f:'Break down waste, worn-out parts and invaders.',t:'The recycling and cleaning crew.',q:'Digests waste and old cell parts'},
+ribo:{n:'Ribosomes',c:0xf4e285,d:'Tiny particles of RNA and protein, free in the cytoplasm or stuck to the rough ER.',f:'Read mRNA and assemble amino acids into proteins.',t:'The chefs who follow the recipe.',q:'Builds proteins from mRNA instructions'}};
+const K=Object.keys(O),P={membrane:0,nucleus:1},hex=c=>'#'+c.toString(16).padStart(6,'0');
+/* ---- navigation ---- */
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav button,.page').forEach(e=>e.classList.remove('on'));b.classList.add('on');$('#'+b.dataset.p).classList.add('on');size()});
+/* ---- 3D scene ---- */
+const cv=$('#cv'),R=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true}),scene=new THREE.Scene(),cam=new THREE.PerspectiveCamera(50,1,.1,100);cam.position.z=9;
+scene.add(new THREE.AmbientLight(0xffffff,.75));const dl=new THREE.DirectionalLight(0xffffff,.9);dl.position.set(3,5,6);scene.add(dl);
+function size(){const s=$('#stage');if(!s.clientWidth)return;R.setSize(s.clientWidth,s.clientHeight);cam.aspect=s.clientWidth/s.clientHeight;cam.updateProjectionMatrix()}addEventListener('resize',size);
+const G=new THREE.Group();scene.add(G);const picks=[],grp={},SP=new THREE.SphereGeometry(1,24,18);
+function mk(k,op=1){const g=new THREE.Group();g.userData={key:k,col:O[k].c,op};G.add(g);picks.push(g);grp[k]=g;return g}
+function part(g,geo,x,y,z,sc,rot){const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:g.userData.col,roughness:.45,transparent:g.userData.op<1,opacity:g.userData.op,side:g.userData.op<.3?2:0,depthWrite:g.userData.op>.3}));m.position.set(x,y,z);sc&&m.scale.set(...sc);rot&&m.rotation.set(...rot);g.add(m);return m}
+part(mk('membrane',.14),SP,0,0,0,[3.3,3.3,3.3]);part(mk('nucleus',.6),SP,0,0,0,[1.1,1.1,1.1]);part(mk('nucleolus'),SP,.25,.2,.5,[.38,.38,.38]);
+const mi=mk('mito');[[2,.8,.6],[-2.1,1,-.4],[1.2,-1.9,.8],[-.8,-2,-1]].forEach((p,i)=>part(mi,SP,...p,[.7,.32,.32],[i,i*.7,i*1.3]));
+const er=mk('er');[[1.2,.3,0],[.4,1.1,.5],[-.6,.2,1]].forEach(r=>part(er,new THREE.TorusGeometry(1.7,.1,10,48),0,0,0,null,r));
+const rb=mk('ribo');for(let i=0;i<45;i++){const v=new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize().multiplyScalar(1.4+Math.random()*1.4);part(rb,SP,v.x,v.y,v.z,[.07,.07,.07])}
+const go=mk('golgi');for(let i=0;i<4;i++)part(go,SP,-2+i*.1,-.7+i*.22,1.2,[.85-i*.06,.1,.55],[0,0,.5]);
+const ly=mk('lyso');[[1.8,-.6,-1.6],[-1.5,-1.2,-1.5],[.4,2.2,1],[-.3,1.9,-1.8],[2.2,1.6,-.4]].forEach(p=>part(ly,SP,...p,[.22,.22,.22]));
+/* hand skeletons (MediaPipe 21 landmarks) */
+const HC=[0,1,1,2,2,3,3,4,0,5,5,6,6,7,7,8,5,9,9,10,10,11,11,12,9,13,13,14,14,15,15,16,13,17,17,18,18,19,19,20,0,17];
+const HS=[0,1].map(i=>{const g=new THREE.Group(),col=i?0x7ee0c3:0xffd166,j=[];for(let k=0;k<21;k++){const m=new THREE.Mesh(SP,new THREE.MeshBasicMaterial({color:k==8?0xffffff:col}));m.scale.setScalar(k==8?.13:.06);g.add(m);j.push(m)}
+const ge=new THREE.BufferGeometry();ge.setAttribute('position',new THREE.BufferAttribute(new Float32Array(HC.length*3),3));g.add(new THREE.LineSegments(ge,new THREE.LineBasicMaterial({color:col})));g.visible=false;scene.add(g);return{g,j,ge}});
+/* ---- picking / selection ---- */
+const rc=new THREE.Raycaster();let sel=null,hm=null,hh=null,zt=1,explored=new Set(),idle=true;
+function pick(x,y){rc.setFromCamera({x,y},cam);let b=null,bp=-1;for(const h of rc.intersectObjects(picks,true)){let o=h.object;while(!o.userData.key)o=o.parent;if(!o.visible)continue;const p=P[o.userData.key]??2;if(p>bp){bp=p;b=o.userData.key}}return b}
+function select(k){sel=k;explored.add(k);const o=O[k];$('#info').innerHTML=`<h2><span class="sw" style="background:${hex(o.c)}"></span>${o.n}</h2><h4>What it is</h4><p>${o.d}</p><h4>What it does</h4><p>${o.f}</p><h4>Memory tip</h4><p>${o.t}</p><p style="margin-top:16px"><button class="btn" onclick="guide('${k}')">Open in cell guide</button></p>`;$('#prog').textContent=`Explored ${explored.size}/${K.length} parts`;if(iso)applyIso()}
+$('#prog').textContent=`Explored 0/${K.length} parts`;
+/* ---- HUD controls: auto-rotation, isolation, repo link ---- */
+let spin=true,iso=false;
+function applyIso(){picks.forEach(g=>{g.visible=!iso||!sel||g.userData.key===sel})}
+function updSpin(){$('#spin').innerHTML=spin?'&#x23F8; Stop rotation':'&#x25B6; Resume rotation';$('#spin').classList.toggle('on',spin)}
+function updIso(){$('#iso').innerHTML=iso?'&#x2B21; Show all parts':'&#x25A1; Isolate selection';$('#iso').classList.toggle('on',iso)}
+$('#spin').onclick=()=>{spin=!spin;updSpin()};
+$('#iso').onclick=()=>{if(!iso&&!sel){say('Select a part first: point + pinch, or click it.');return}iso=!iso;applyIso();updIso()};
+updSpin();updIso();
+function guide(k){document.querySelector('[data-p=p2]').click();const c=$('#c_'+k);c.scrollIntoView({block:'center'});c.classList.add('fl');setTimeout(()=>c.classList.remove('fl'),1800)}
+/* mouse fallback */
+let dr=null;const ndc=e=>{const r=cv.getBoundingClientRect();return[(e.clientX-r.left)/r.width*2-1,-((e.clientY-r.top)/r.height*2-1)]};
+cv.onpointerdown=e=>{dr={x:e.clientX,y:e.clientY,m:0};cv.setPointerCapture(e.pointerId)};
+cv.onpointermove=e=>{if(dr){const dx=e.clientX-dr.x,dy=e.clientY-dr.y;dr.m+=Math.abs(dx)+Math.abs(dy);G.rotation.y+=dx*.01;G.rotation.x+=dy*.01;dr.x=e.clientX;dr.y=e.clientY}else hm=pick(...ndc(e))};
+cv.onpointerup=e=>{if(dr&&dr.m<5){const k=pick(...ndc(e));k&&select(k)}dr=null};
+cv.onwheel=e=>{e.preventDefault();zt=Math.min(2.2,Math.max(.5,zt-e.deltaY*.001))};
+/* ---- hand tracking ---- */
+const st=[{p:0,g:0,pv:null},{p:0,g:0,pv:null}];let pd=null,H=null,busy=false;const say=t=>$('#st').textContent=t;
+function onRes(r){const L=r.multiHandLandmarks||[],vh=2*9*Math.tan(25*Math.PI/180),vw=vh*cam.aspect;let gr=[],hv=null;
+say(L.length?`Tracking ${L.length} hand${L.length>1?'s':''}`:'Show your hand to the camera');
+for(let i=0;i<2;i++){const h=HS[i],lm=L[i],s=st[i];h.g.visible=!!lm;if(!lm){s.p=s.g=0;s.pv=null;continue}
+const pa=h.ge.attributes.position,pos=lm.map(l=>[(.5-l.x)*vw,(.5-l.y)*vh,-l.z*6]);pos.forEach((p,k)=>h.j[k].position.set(...p));HC.forEach((k,n)=>pa.setXYZ(n,...pos[k]));pa.needsUpdate=true;
+const sz=Math.hypot(lm[0].x-lm[9].x,lm[0].y-lm[9].y),pr=Math.hypot(lm[4].x-lm[8].x,lm[4].y-lm[8].y)/sz,was=s.p;s.p=was?pr<.55:pr<.35;
+const k=pick((1-lm[8].x)*2-1,-(lm[8].y*2-1));if(k)hv=k;h.j[8].scale.setScalar(s.p?.18:.13);
+if(s.p&&!was){if(k){select(k);s.g=0}else s.g=1}if(!s.p)s.g=0;
+const pm=[1-lm[9].x,lm[9].y];if(s.p&&s.g){gr.push(i);if(s.pv&&gr.length==1){G.rotation.y+=(pm[0]-s.pv[0])*7;G.rotation.x+=(pm[1]-s.pv[1])*7}s.pv=pm}else s.pv=null}
+hh=hv;if(gr.length==2){const a=L[0][8],b=L[1][8],d=Math.hypot(a.x-b.x,a.y-b.y);if(pd!=null)zt=Math.min(2.2,Math.max(.5,zt+(d-pd)*4));pd=d}else pd=null}
+$('#go').onclick=async()=>{try{const v=$('#vid'),s=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});v.srcObject=s;await v.play();v.style.display='block';$('#go').style.display='none';say('Loading hand model...');
+H=new Hands({locateFile:f=>`https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${f}`});H.setOptions({maxNumHands:2,modelComplexity:1,minDetectionConfidence:.6,minTrackingConfidence:.5});H.onResults(onRes);
+(function f(){if(!busy){busy=true;H.send({image:v}).then(()=>busy=false).catch(()=>busy=false)}requestAnimationFrame(f)})()}
+catch(e){say('Camera or model unavailable ('+e.message+'). Mouse controls still work. If the camera is blocked, open this file through localhost.')}};
+/* ---- render loop ---- */
+const c3=new THREE.Color();
+(function loop(t){requestAnimationFrame(loop);if(!$('#p1').classList.contains('on'))return;const hov=hh||hm;
+if(spin&&!dr&&!st[0].g&&!st[1].g)G.rotation.y+=.0015;G.scale.setScalar(G.scale.x+(zt-G.scale.x)*.15);
+picks.forEach(g=>{const k=g.userData.key,e=k==hov?.8:k==sel?.45:0;g.children.forEach(m=>m.material.emissive.setHex(g.userData.col).multiplyScalar(e));if(k=='mito'||k=='lyso')g.position.y=Math.sin(t/700+k.length)*.06});
+cv.style.cursor=hov?'pointer':'grab';R.render(scene,cam)})(0);size();
+/* ---- page 2: guide ---- */
+function cards(f=''){f=f.toLowerCase();$('#gd').innerHTML=K.filter(k=>(O[k].n+O[k].d+O[k].f).toLowerCase().includes(f)).map(k=>{const o=O[k];return`<div class="card" id="c_${k}" style="border-left-color:${hex(o.c)}"><h3>${o.n}</h3><h4>What it is</h4><p>${o.d}</p><h4>What it does</h4><p>${o.f}</p><h4>Memory tip</h4><p>${o.t}</p></div>`}).join('')||'<p class="sub">No match. Try "energy" or "protein".</p>'}
+cards();$('#q').oninput=e=>cards(e.target.value);
+/* ---- page 3: mind map test ---- */
+let done,bad,cur;
+function build(){done=new Set();bad=0;cur=null;$('#ch').innerHTML='';const m=$('#map');let h='<svg viewBox="0 0 100 100" preserveAspectRatio="none">';
+const pos=K.map((k,i)=>[50+40*Math.cos(i*Math.PI/4-Math.PI/2),50+39*Math.sin(i*Math.PI/4-Math.PI/2)]);pos.forEach(p=>h+=`<line x1="50" y1="50" x2="${p[0]}" y2="${p[1]}"/>`);h+='</svg><div class="nd ctr">Cell</div>';
+K.forEach((k,i)=>h+=`<div class="nd" id="n_${k}" style="left:${pos[i][0]}%;top:${pos[i][1]}%" onclick="ask('${k}')">${O[k].q}</div>`);m.innerHTML=h;score()}
+function score(){$('#sc').textContent=`Score: ${done.size}/${K.length} found, ${bad} mistake${bad==1?'':'s'}`+(done.size==K.length?(bad?'. Done! Retry for a perfect run.':'. Perfect score!'):'')}
+function ask(k){if(done.has(k))return;cur=k;document.querySelectorAll('.nd').forEach(n=>n.classList.remove('sel'));$('#n_'+k).classList.add('sel');
+const o=[k,...K.filter(x=>x!=k).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);$('#ch').innerHTML='<b>Which part is it?</b>'+o.map(x=>`<button onclick="ans('${x}')">${O[x].n}</button>`).join('')+'<button onclick="build()" style="background:none;border:1px solid var(--l)">Restart</button>'}
+function ans(x){const n=$('#n_'+cur);if(x==cur){done.add(cur);n.classList.remove('sel');n.classList.add('ok');n.innerHTML=`<b>${O[cur].n}</b><br>${O[cur].q}`;$('#ch').innerHTML='';cur=null}else{bad++;n.classList.remove('bad');void n.offsetWidth;n.classList.add('bad')}score()}
+build();
+</script></body></html>
