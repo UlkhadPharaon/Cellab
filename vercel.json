@@ -1,5 +1,12 @@
 {
   "rewrites": [
-    { "source": "/", "destination": "/cell-lab.html" }
+    {
+      "source": "/",
+      "destination": "/cell-lab.html"
+    },
+    {
+      "source": "/roadmap",
+      "destination": "/roadmap.html"
+    }
   ]
 }
