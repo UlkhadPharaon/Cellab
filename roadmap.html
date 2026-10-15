@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cellab · Roadmap — Celly v2 coming soon</title><link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%A6%A0%3C/text%3E%3C/svg%3E">
+<style>
+:root{--bg:#08171f;--p:#0f2630;--l:#1b3a47;--t:#e6f1ef;--m:#8fb0b3;--a:#7ee0c3}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--t);font:15px/1.6 system-ui,sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:26px}
+.card{background:var(--p);border:1px solid var(--l);border-radius:14px;max-width:640px;width:100%;padding:30px}
+h1{font:700 30px Georgia,serif;margin:0 0 2px}h1 span{color:var(--a)}
+.sub{color:var(--m);margin:0 0 20px}
+.badge{display:inline-block;background:var(--a);color:#062;font:600 13px system-ui;padding:5px 12px;border-radius:99px;margin-bottom:18px}
+ul{list-style:none;padding:0;margin:0 0 22px}
+li{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-bottom:1px dashed var(--l);color:#c9dcdc}
+li b{color:var(--a);flex:none}
+.done{color:var(--m)}
+.links{display:flex;flex-wrap:wrap;gap:10px}
+a.btn{background:var(--a);color:#062;text-decoration:none;padding:10px 16px;border-radius:8px;font:600 14px system-ui}
+a.gh{background:none;color:var(--t);border:1px solid var(--l);text-decoration:none;padding:10px 16px;border-radius:8px;font:600 14px system-ui}
+a.gh:hover{border-color:var(--a);color:var(--a)}
+a.txt{color:var(--m);text-decoration:underline}
+</style></head><body>
+<div class="card">
+<div class="badge">🚧 Celly v2 — coming soon</div>
+<h1>Cellab <span>→ Celly</span></h1>
+<p class="sub">Cellab v1 is live: a touch-free 3D cell explorer driven by your webcam and your hands. Celly is the second iteration, built with the same gesture pipeline and a real rigged 3D hand.</p>
+<ul>
+<li class="done"><b>✓</b> v1 — Three.js cell, MediaPipe hand tracking, guide + mind-map test (live)</li>
+<li><b>•</b> Rigged GLB hand (GLTFLoader) driven by the same 21 landmarks, bones 00_WRIST → 20_PINKY_TIP</li>
+<li><b>•</b> Landmark smoothing filter for steadier skeletons</li>
+<li><b>•</b> Hand control on the guide and quiz pages, not only the 3D view</li>
+<li><b>•</b> Libraries + model bundled for full offline use</li>
+<li><b>•</b> French / English toggle</li>
+<li><b>•</b> Plant cell mode, organelle zoom, in-scene labels</li>
+<li><b>•</b> WebXR and mobile support</li>
+</ul>
+<div class="links">
+<a class="btn" href="/">Open Cellab v1</a>
+<a class="gh" href="https://github.com/UlkhadPharaon/Cellab">GitHub repo</a>
+<a class="txt" href="https://medium.com/@ulrichtapsoba2009/from-rgb-camera-to-3d-interaction-how-controller-free-xr-could-transform-learning-d920d92cf5ba">Read the companion article on Medium</a>
+</div>
+</div>
+</body></html>

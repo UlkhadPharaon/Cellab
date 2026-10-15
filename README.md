@@ -3,7 +3,8 @@
 **Touch-free 3D cell explorer.** Rotate, zoom and select the parts of an animal cell using only your webcam and your hands. No controller, no install, no account, no server — one HTML file.
 
 > 🔬 **Live demo:** https://cellab.vercel.app
-> 📦 **This is version 1 — Cellab.** The second iteration, **Celly (v2)**, is already scoped: Blender-rigged 3D hands, hand control on every page, offline bundling and more (see [Roadmap](#-roadmap-cellab-v1--celly-v2)).
+> 🗺️ **Roadmap:** https://cellab.vercel.app/roadmap
+> 📦 **This is version 1 — Cellab.** The second iteration, **Celly (v2)** — coming soon: Blender-rigged 3D hands, hand control on every page, offline bundling and more (see [Roadmap](https://cellab.vercel.app/roadmap)).
 
 ![Cellab explore page](docs/screenshot.png)
 
@@ -13,7 +14,7 @@
 
 Cellab turns the flat, passive cell diagram from a biology textbook into a **real-time 3D object you can grab with your empty hands**. Point at the mitochondrion, pinch, and the app tells you what it is, what it does, and how to remember it. Pinch in empty space and sweep your hand — the cell rotates. Spread both hands — it zooms.
 
-It comes out of a written thesis: **[“From RGB Camera to 3D Interaction: How Controller-Free XR Could Transform Learning”](https://medium.com/@ulrichtapsoba)** (Medium, 2026). The argument: human brains learn best through patterns they already know — grabbing, turning, looking at things. Standard education forces learners to *imagine* those visuals instead of *experiencing* them. Controller-free XR restores the natural loop, and Cellab is the minimal, honest proof-of-concept of that idea: no headset, no controllers, no cost — just an RGB camera.
+It comes out of a written thesis: **[“From RGB Camera to 3D Interaction: How Controller-Free XR Could Transform Learning”](https://medium.com/@ulrichtapsoba2009/from-rgb-camera-to-3d-interaction-how-controller-free-xr-could-transform-learning-d920d92cf5ba)** (Medium, 2026). The argument: human brains learn best through patterns they already know — grabbing, turning, looking at things. Standard education forces learners to *imagine* those visuals instead of *experiencing* them. Controller-free XR restores the natural loop, and Cellab is the minimal, honest proof-of-concept of that idea: no headset, no controllers, no cost — just an RGB camera.
 
 ### The three connected pages
 
@@ -95,6 +96,7 @@ First run downloads the hand model (~a few MB) from jsDelivr, then works from ca
 ```
 Cellab/
 ├── cell-lab.html                  ← the entire application (one file)
+├── roadmap.html                   ← public roadmap page: Cellab v1 → Celly v2 (coming soon)
 ├── vercel.json                    ← static hosting config (root → cell-lab.html)
 ├── docs/
 │   ├── CellLab-presentation.pdf   ← 8-page technical deck (architecture, gesture math, roadmap)
@@ -129,7 +131,7 @@ The video stream is processed **entirely on-device** by a WASM build of MediaPip
 
 ## 🗺️ Roadmap: Cellab v1 → Celly v2
 
-**Cellab** is the first version — the working proof that an RGB camera and gestures can replace a controller in a learning tool. **Celly** is the second iteration and the current active build:
+**Cellab** is the first version — the working proof that an RGB camera and gestures can replace a controller in a learning tool. **Celly** is the second iteration and the next build — the live version of this section: https://cellab.vercel.app/roadmap
 
 - [ ] Load the rigged GLB hand (GLTFLoader) and drive bones `00_WRIST … 20_PINKY_TIP` from the same 21 landmarks (same indices, same pipeline)
 - [ ] Smoothing filter on landmarks
@@ -141,7 +143,7 @@ The video stream is processed **entirely on-device** by a WASM build of MediaPip
 
 ## 🎓 Research context
 
-Cellab is the practical companion to the article *“From RGB Camera to 3D Interaction: How Controller-Free XR Could Transform Learning”*. Selected references:
+Cellab is the practical companion to the article *[“From RGB Camera to 3D Interaction: How Controller-Free XR Could Transform Learning”](https://medium.com/@ulrichtapsoba2009/from-rgb-camera-to-3d-interaction-how-controller-free-xr-could-transform-learning-d920d92cf5ba)*. Selected references:
 
 - Google — *Hands-free guide to MediaPipe Hands tracking*
 - *Object detection and tracking using MediaPipe*
@@ -155,4 +157,4 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
-*Built as a TKS focus project · Author: **Ulkhad Pharaon** ([@UlkhadPharaon](https://github.com/UlkhadPharaon) · [@ulrichtapsoba](https://medium.com/@ulrichtapsoba)) · Cellab v1, 2026 — the hand-tracked cell. Celly comes next.*
+*Built as a TKS focus project · Author: **Ulkhad Pharaon** ([@UlkhadPharaon](https://github.com/UlkhadPharaon) · [@ulrichtapsoba2009](https://medium.com/@ulrichtapsoba2009)) · Cellab v1, 2026 — the hand-tracked cell. Celly (v2) comes next.*
